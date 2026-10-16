@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sıfırdan İnteraktif Poker Rehberi & Antrenman</title>
+    <title>Poker Akademi - Sıfırdan Öğren & Maç At</title>
     <style>
         :root {
-            --bg-dark: #0b132b;
-            --card-bg: #1c2541;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
             --table-felt: #0b6623;
             --accent-green: #10b981;
             --gold: #f59e0b;
@@ -15,7 +15,7 @@
             --text-muted: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); padding: 20px; }
         .container { max-width: 950px; margin: 0 auto; }
 
@@ -25,7 +25,7 @@
 
         /* Navigasyon */
         .step-nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
-        .step-btn { background: var(--card-bg); border: 1px solid #3a506b; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .step-btn { background: var(--card-bg); border: 1px solid #334155; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .step-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
 
         /* Kart Kutu */
@@ -35,15 +35,15 @@
         .lesson-card p { font-size: 1.05rem; line-height: 1.6; margin-bottom: 15px; color: #e2e8f0; }
 
         /* Poker Masası */
-        .poker-table { background: var(--table-felt); border: 12px solid #5c3d2e; border-radius: 100px; padding: 25px; margin: 20px 0; text-align: center; box-shadow: inset 0 0 25px rgba(0,0,0,0.7); position: relative; }
+        .poker-table { background: var(--table-felt); border: 10px solid #5c3d2e; border-radius: 80px; padding: 25px; margin: 20px 0; text-align: center; box-shadow: inset 0 0 25px rgba(0,0,0,0.7); }
         .table-title { color: #86efac; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
 
         .cards-row { display: flex; justify-content: center; gap: 8px; margin: 12px 0; flex-wrap: wrap; min-height: 80px; align-items: center; }
         
         /* Kart Tasarımı */
-        .card { background: white; color: #1e293b; font-weight: bold; width: 52px; height: 78px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #cbd5e1; user-select: none; }
+        .card { background: white; color: #1e293b; font-weight: bold; width: 52px; height: 78px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #cbd5e1; }
         .card.red { color: #dc2626; }
-        .card.back { background: #1e293b; border: 2px solid #38bdf8; color: #38bdf8; font-size: 1.5rem; }
+        .card.back { background: #1e293b; border: 2px solid #38bdf8; color: #38bdf8; font-size: 1.4rem; }
         .card.empty { background: rgba(255,255,255,0.12); border: 2px dashed rgba(255,255,255,0.3); color: transparent; }
 
         /* Pratik Kutusu */
@@ -51,8 +51,7 @@
         .practice-box h4 { color: var(--accent-green); margin-bottom: 8px; }
         .choice-btns { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
         .choice-btn { background: #3b82f6; border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .choice-btn:hover { background: #2563eb; }
-
+        
         .result-msg { margin-top: 10px; font-weight: bold; padding: 8px; border-radius: 4px; display: none; }
         .result-msg.success { background: #166534; color: #86efac; display: block; }
         .result-msg.error { background: #991b1b; color: #fca5a5; display: block; }
@@ -60,5 +59,453 @@
         .nav-footer { display: flex; justify-content: space-between; margin-top: 25px; }
         .action-btn { background: var(--gold); border: none; color: black; font-weight: bold; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
 
-        /* MAÇ MODU ÖZEL STİLLERİ */
-        .bot-area { display: flex; justify-content: space-around; margin-bottom: 15px;
+        /* MAÇ MODU */
+        .bot-area { display: flex; justify-content: space-around; margin-bottom: 15px; }
+        .player-box { background: rgba(15, 23, 42, 0.8); padding: 10px 15px; border-radius: 8px; border: 1px solid #334155; display: inline-block; }
+        .player-name { font-weight: bold; color: var(--gold); font-size: 0.9rem; }
+        .player-chips { color: var(--accent-green); font-size: 0.85rem; font-weight: bold; }
+        .pot-display { background: var(--gold); color: black; font-weight: bold; padding: 6px 16px; border-radius: 20px; display: inline-block; margin: 10px 0; font-size: 1rem; }
+        .game-controls { display: flex; justify-content: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-game { padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; font-size: 0.95rem; cursor: pointer; color: white; }
+        .btn-check { background: #22c55e; }
+        .btn-raise { background: #f59e0b; color: black; }
+        .btn-fold { background: #ef4444; }
+        .btn-game:disabled { opacity: 0.4; cursor: not-allowed; }
+        .log-box { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 0.85rem; max-height: 120px; overflow-y: auto; text-align: left; color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>♠️ Poker Akademi ♥️</h1>
+            <p>Sıfırdan Görerek Öğren ve Botlara Karşı Maç At!</p>
+        </header>
+
+        <!-- Navigasyon -->
+        <div class="step-nav">
+            <button class="step-btn active" onclick="loadStep(1)">1. Temel Mantık</button>
+            <button class="step-btn" onclick="loadStep(2)">2. Dağıtım & Hamleler</button>
+            <button class="step-btn" onclick="loadStep(3)">3. Masanın Açılması</button>
+            <button class="step-btn" onclick="loadStep(4)">4. En İyi 5'li</button>
+            <button class="step-btn" style="border-color: var(--gold); color: var(--gold);" onclick="loadStep(5)">🔥 5. CANLI MAÇ</button>
+        </div>
+
+        <!-- ADIM 1 -->
+        <div id="step-1" class="lesson-card active">
+            <h2>Adım 1: Oyunun Temel Amacı</h2>
+            <p>Texas Hold'em Poker'de amaç basittir: <strong>Elinizdeki 2 özel kart</strong> ile <strong>masadaki 5 ortak kartı</strong> birleştirip en güçlü 5 kartlık eli yapmaktır.</p>
+
+            <div class="poker-table">
+                <div class="table-title">Masadaki Ortak Kartlar</div>
+                <div class="cards-row">
+                    <div class="card red">K♦</div>
+                    <div class="card">J♠</div>
+                    <div class="card red">8♥</div>
+                    <div class="card">2♣</div>
+                    <div class="card red">A♥</div>
+                </div>
+
+                <div class="table-title" style="margin-top: 15px;">Senin Elindeki Özel Kartlar</div>
+                <div class="cards-row">
+                    <div class="card red">A♦</div>
+                    <div class="card red">K♥</div>
+                </div>
+            </div>
+
+            <div class="practice-box">
+                <h4>🧠 Örnek Soru:</h4>
+                <p>Masada bir <strong>A</strong> kartı var, senin elinde de bir <strong>A</strong> var. Çift (Per) yapmış olur musun?</p>
+                <div class="choice-btns">
+                    <button class="choice-btn" onclick="checkChoice(1, true)">Evet, Per Yapmış Olurum</button>
+                    <button class="choice-btn" onclick="checkChoice(1, false)">Hayır, Sayılmaz</button>
+                </div>
+                <div id="res-1" class="result-msg"></div>
+            </div>
+
+            <div class="nav-footer">
+                <div></div>
+                <button class="action-btn" onclick="loadStep(2)">Sonraki Adım ➡️</button>
+            </div>
+        </div>
+
+        <!-- ADIM 2 -->
+        <div id="step-2" class="lesson-card">
+            <h2>Adım 2: Tur Başlangıcı ve Kararlar</h2>
+            <p>Herkese 2 kapalı kart dağıtılır. Kartlarına bakıp karar verirsin:</p>
+            <ul style="margin-left: 20px; color: #cbd5e1; margin-bottom: 15px;">
+                <li><strong>Fold (Çekil):</strong> Kötü elde pas geçersin.</li>
+                <li><strong>Call (Gör):</strong> Bahsi kabul edersin.</li>
+                <li><strong>Raise (Artır):</strong> Bahsi yükseltirsin.</li>
+            </ul>
+
+            <div class="poker-table">
+                <div class="table-title">Henüz Masaya Kart Açılmadı!</div>
+                <div class="cards-row">
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                </div>
+
+                <div class="table-title" style="margin-top: 15px;">Sana Gelen Kartlar:</div>
+                <div class="cards-row">
+                    <div class="card">2♠</div>
+                    <div class="card red">7♦</div>
+                </div>
+            </div>
+
+            <div class="practice-box">
+                <h4>🧠 Senaryo:</h4>
+                <p>Eline 2 ve 7 geldi (Pokerin en zayıf ellerinden biri). Ne yapmalısın?</p>
+                <div class="choice-btns">
+                    <button class="choice-btn" onclick="checkChoice(2, 'fold')">Fold (Çekilmek En Mantıklısı)</button>
+                    <button class="choice-btn" onclick="checkChoice(2, 'raise')">Raise (Tüm Parayı Yatır)</button>
+                </div>
+                <div id="res-2" class="result-msg"></div>
+            </div>
+
+            <div class="nav-footer">
+                <button class="action-btn" onclick="loadStep(1)">⬅️ Önceki Adım</button>
+                <button class="action-btn" onclick="loadStep(3)">Sonraki Adım ➡️</button>
+            </div>
+        </div>
+
+        <!-- ADIM 3 -->
+        <div id="step-3" class="lesson-card">
+            <h2>Adım 3: Masadaki Kartların Açılış Sırası</h2>
+            <p>Masaya 5 kart tek seferde açılmaz:</p>
+            <ol style="margin-left: 20px; color: #cbd5e1; margin-bottom: 15px;">
+                <li><strong>Flop:</strong> İlk 3 kart açılır.</li>
+                <li><strong>Turn:</strong> 4. kart açılır.</li>
+                <li><strong>River:</strong> 5. ve son kart açılır.</li>
+            </ol>
+
+            <div class="poker-table">
+                <div class="table-title">Flop (İlk 3 Kart Açıldı)</div>
+                <div class="cards-row">
+                    <div class="card red">Q♥</div>
+                    <div class="card red">J♥</div>
+                    <div class="card red">10♥</div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                </div>
+
+                <div class="table-title" style="margin-top: 15px;">Senin Elin:</div>
+                <div class="cards-row">
+                    <div class="card red">A♥</div>
+                    <div class="card red">K♥</div>
+                </div>
+            </div>
+
+            <div class="practice-box">
+                <h4>🧠 İncele:</h4>
+                <p>Elinize bakın: A-K-Q-J-10 hepsi Kırmızı Kalp (♥) oldu! Bu **Royal Flush**'tır.</p>
+                <div class="choice-btns">
+                    <button class="choice-btn" onclick="checkChoice(3, true)">Bu El İle Kesin Kazanırım!</button>
+                </div>
+                <div id="res-3" class="result-msg"></div>
+            </div>
+
+            <div class="nav-footer">
+                <button class="action-btn" onclick="loadStep(2)">⬅️ Önceki Adım</button>
+                <button class="action-btn" onclick="loadStep(4)">Sonraki Adım ➡️</button>
+            </div>
+        </div>
+
+        <!-- ADIM 4 -->
+        <div id="step-4" class="lesson-card">
+            <h2>Adım 4: En İyi 5'li Kombinasyon</h2>
+            <p>Masada 5, elinde 2 kart var. Bu 7 kart arasından en güçlü 5 tanesi elini oluşturur.</p>
+
+            <div class="poker-table">
+                <div class="table-title">Masadaki 5 Kart:</div>
+                <div class="cards-row">
+                    <div class="card">10♠</div>
+                    <div class="card">10♣</div>
+                    <div class="card red">5♦</div>
+                    <div class="card red">2♥</div>
+                    <div class="card">K♠</div>
+                </div>
+
+                <div class="table-title" style="margin-top: 15px;">Senin Elin:</div>
+                <div class="cards-row">
+                    <div class="card red">10♥</div>
+                    <div class="card red">A♦</div>
+                </div>
+            </div>
+
+            <div class="practice-box">
+                <h4>🧠 Soru:</h4>
+                <p>Masada iki adet 10 var, senin elinde de bir adet 10 var. Elin ne olur?</p>
+                <div class="choice-btns">
+                    <button class="choice-btn" onclick="checkChoice(4, 'three')">Üçlü (Three of a Kind / Set)</button>
+                    <button class="choice-btn" onclick="checkChoice(4, 'pair')">Sadece Tek Per</button>
+                </div>
+                <div id="res-4" class="result-msg"></div>
+            </div>
+
+            <div class="nav-footer">
+                <button class="action-btn" onclick="loadStep(3)">⬅️ Önceki Adım</button>
+                <button class="action-btn" onclick="loadStep(5)">Canlı Maç Moduna Geç 🔥</button>
+            </div>
+        </div>
+
+        <!-- ADIM 5: CANLI MAÇ MODU -->
+        <div id="step-5" class="lesson-card">
+            <h2>🔥 Botlara Karşı Canlı Maç</h2>
+            <p>Masaya otur, bahsini yap ve botları yenmeye çalış!</p>
+
+            <div class="poker-table">
+                <!-- Botlar -->
+                <div class="bot-area">
+                    <div class="player-box">
+                        <div class="player-name">🤖 Bot 1</div>
+                        <div class="player-chips" id="bot1-chips">Chip: 1000$</div>
+                        <div class="cards-row" id="bot1-cards">
+                            <div class="card back">♠</div>
+                            <div class="card back">♠</div>
+                        </div>
+                    </div>
+
+                    <div class="player-box">
+                        <div class="player-name">🤖 Bot 2</div>
+                        <div class="player-chips" id="bot2-chips">Chip: 1000$</div>
+                        <div class="cards-row" id="bot2-cards">
+                            <div class="card back">♠</div>
+                            <div class="card back">♠</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pot-display">🏆 POT: <span id="pot-amount">0$</span></div>
+
+                <!-- Ortak Kartlar -->
+                <div class="table-title">Masadaki Ortak Kartlar</div>
+                <div class="cards-row" id="table-cards">
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                    <div class="card empty"></div>
+                </div>
+
+                <!-- Sen -->
+                <div style="margin-top: 15px;">
+                    <div class="player-box" style="border-color: var(--gold);">
+                        <div class="player-name">😎 SEN (Oyuncu)</div>
+                        <div class="player-chips" id="user-chips">Chip: 1000$</div>
+                        <div class="cards-row" id="user-cards">
+                            <div class="card empty"></div>
+                            <div class="card empty"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontroller -->
+            <div class="game-controls">
+                <button id="btn-start" class="btn-game" style="background: var(--gold); color: black;" onclick="startNewHand()">Yeni El Başlat</button>
+                <button id="btn-check" class="btn-game btn-check" onclick="playTurn('check')" disabled>Gör / Pas Geç</button>
+                <button id="btn-raise" class="btn-game btn-raise" onclick="playTurn('raise')" disabled>Bahis Artır (+20$)</button>
+                <button id="btn-fold" class="btn-game btn-fold" onclick="playTurn('fold')" disabled>Çekil (Fold)</button>
+            </div>
+
+            <div class="log-box" id="game-log">
+                👉 "Yeni El Başlat" butonuna basarak antrenman maçını başlatın!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadStep(stepNum) {
+            document.querySelectorAll('.lesson-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('step-' + stepNum).classList.add('active');
+            document.querySelectorAll('.step-btn')[stepNum - 1].classList.add('active');
+        }
+
+        function checkChoice(step, val) {
+            const res = document.getElementById('res-' + step);
+            if (step === 1 && val === true) {
+                res.className = "result-msg success";
+                res.innerText = "Doğru! Masadaki A ile elindeki A birleşip Per oluşturur.";
+            } else if (step === 2 && val === 'fold') {
+                res.className = "result-msg success";
+                res.innerText = "Harika karar! 2 ve 7 en zayıf eldir, pas geçmek en doğrusudur.";
+            } else if (step === 3) {
+                res.className = "result-msg success";
+                res.innerText = "Aynen öyle! Royal Flush yenilmez tek eldir.";
+            } else if (step === 4 && val === 'three') {
+                res.className = "result-msg success";
+                res.innerText = "Tebrikler! Masadaki 2 adet 10 ile senin elindeki 1 adet 10 Üçlü oluşturur.";
+            } else {
+                res.className = "result-msg error";
+                res.innerText = "Yanlış seçim! Tekrar dene.";
+            }
+        }
+
+        /* MAÇ MOTORU */
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+        
+        let deck = [];
+        let gameState = {
+            stage: 'IDLE',
+            pot: 0,
+            userChips: 1000,
+            bot1Chips: 1000,
+            bot2Chips: 1000,
+            userHand: [],
+            bot1Hand: [],
+            bot2Hand: [],
+            tableCards: []
+        };
+
+        function createDeck() {
+            deck = [];
+            for (let s of suits) {
+                for (let v of values) {
+                    deck.push({ suit: s, value: v, isRed: (s === '♥' || s === '♦') });
+                }
+            }
+            deck.sort(() => Math.random() - 0.5);
+        }
+
+        function log(msg) {
+            const logBox = document.getElementById('game-log');
+            logBox.innerHTML += '<div>> ' + msg + '</div>';
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function renderCard(card) {
+            return '<div class="card ' + (card.isRed ? 'red' : '') + '">' + card.value + card.suit + '</div>';
+        }
+
+        function startNewHand() {
+            if (gameState.userChips < 20) {
+                alert("Bakiyeniz bitti! 1000$ yenilendi.");
+                gameState.userChips = 1000;
+                gameState.bot1Chips = 1000;
+                gameState.bot2Chips = 1000;
+            }
+
+            createDeck();
+            document.getElementById('game-log').innerHTML = "";
+            log("Kartlar karıştırıldı. Yeni el başladı!");
+
+            gameState.pot = 30;
+            gameState.userChips -= 10;
+            gameState.bot1Chips -= 10;
+            gameState.bot2Chips -= 10;
+            updateChips();
+
+            gameState.userHand = [deck.pop(), deck.pop()];
+            gameState.bot1Hand = [deck.pop(), deck.pop()];
+            gameState.bot2Hand = [deck.pop(), deck.pop()];
+            gameState.tableCards = [];
+
+            document.getElementById('user-cards').innerHTML = renderCard(gameState.userHand[0]) + renderCard(gameState.userHand[1]);
+            document.getElementById('bot1-cards').innerHTML = '<div class="card back">♠</div><div class="card back">♠</div>';
+            document.getElementById('bot2-cards').innerHTML = '<div class="card back">♠</div><div class="card back">♠</div>';
+            document.getElementById('table-cards').innerHTML = '<div class="card empty"></div><div class="card empty"></div><div class="card empty"></div><div class="card empty"></div><div class="card empty"></div>';
+
+            gameState.stage = 'PREFLOP';
+            log("Sana 2 kapalı kart verildi. Hamleni seç!");
+            toggleControls(true);
+        }
+
+        function toggleControls(enable) {
+            document.getElementById('btn-check').disabled = !enable;
+            document.getElementById('btn-raise').disabled = !enable;
+            document.getElementById('btn-fold').disabled = !enable;
+            document.getElementById('btn-start').disabled = enable;
+        }
+
+        function updateChips() {
+            document.getElementById('pot-amount').innerText = gameState.pot + "$";
+            document.getElementById('user-chips').innerText = "Chip: " + gameState.userChips + "$";
+            document.getElementById('bot1-chips').innerText = "Chip: " + gameState.bot1Chips + "$";
+            document.getElementById('bot2-chips').innerText = "Chip: " + gameState.bot2Chips + "$";
+        }
+
+        function playTurn(action) {
+            if (action === 'fold') {
+                log("❌ Elden çekildiniz (Fold).");
+                toggleControls(false);
+                setTimeout(resolveShowdown, 800);
+                return;
+            }
+
+            if (action === 'raise') {
+                gameState.userChips -= 20;
+                gameState.pot += 20;
+                log("💰 Bahsi +20$ artırdınız.");
+            } else {
+                log("✅ Pas geçtiniz / Gör yaptınız.");
+            }
+
+            gameState.bot1Chips -= 10;
+            gameState.bot2Chips -= 10;
+            gameState.pot += 20;
+            updateChips();
+
+            if (gameState.stage === 'PREFLOP') {
+                gameState.stage = 'FLOP';
+                gameState.tableCards.push(deck.pop(), deck.pop(), deck.pop());
+                log("🃏 FLOP: Masaya 3 kart açıldı!");
+            } else if (gameState.stage === 'FLOP') {
+                gameState.stage = 'TURN';
+                gameState.tableCards.push(deck.pop());
+                log("🃏 TURN: Masaya 4. kart açıldı!");
+            } else if (gameState.stage === 'TURN') {
+                gameState.stage = 'RIVER';
+                gameState.tableCards.push(deck.pop());
+                log("🃏 RIVER: Masaya 5. kart açıldı!");
+            } else if (gameState.stage === 'RIVER') {
+                resolveShowdown();
+                return;
+            }
+
+            renderTableCards();
+        }
+
+        function renderTableCards() {
+            let html = "";
+            for (let c of gameState.tableCards) {
+                html += renderCard(c);
+            }
+            for (let i = gameState.tableCards.length; i < 5; i++) {
+                html += '<div class="card empty"></div>';
+            }
+            document.getElementById('table-cards').innerHTML = html;
+        }
+
+        function resolveShowdown() {
+            toggleControls(false);
+            log("⚔️ SHOWDOWN! Kartlar açılıyor...");
+
+            document.getElementById('bot1-cards').innerHTML = renderCard(gameState.bot1Hand[0]) + renderCard(gameState.bot1Hand[1]);
+            document.getElementById('bot2-cards').innerHTML = renderCard(gameState.bot2Hand[0]) + renderCard(gameState.bot2Hand[1]);
+
+            let winner = Math.floor(Math.random() * 3);
+            if (winner === 0) {
+                gameState.userChips += gameState.pot;
+                log("🎉 TEBRİKLER! Eli siz kazandınız! +" + gameState.pot + "$");
+            } else if (winner === 1) {
+                gameState.bot1Chips += gameState.pot;
+                log("🤖 Bot 1 kazandı.");
+            } else {
+                gameState.bot2Chips += gameState.pot;
+                log("🤖 Bot 2 kazandı.");
+            }
+
+            gameState.pot = 0;
+            updateChips();
+            document.getElementById('btn-start').disabled = false;
+        }
+    </script>
+</body>
+</html>
