@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sıfırdan İnteraktif Poker Rehberi</title>
+    <title>Sıfırdan İnteraktif Poker Rehberi & Antrenman</title>
     <style>
         :root {
             --bg-dark: #0b132b;
@@ -17,35 +17,36 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-light); padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 950px; margin: 0 auto; }
 
-        header { text-align: center; margin-bottom: 30px; }
+        header { text-align: center; margin-bottom: 25px; }
         header h1 { color: var(--gold); font-size: 2.2rem; margin-bottom: 5px; }
         header p { color: var(--text-muted); }
 
-        /* Adım Navigasyonu */
-        .step-nav { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-        .step-btn { background: var(--card-bg); border: 1px solid #3a506b; color: white; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        /* Navigasyon */
+        .step-nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; }
+        .step-btn { background: var(--card-bg); border: 1px solid #3a506b; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .step-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
 
-        /* Ders Kutusu */
+        /* Kart Kutu */
         .lesson-card { background: var(--card-bg); border-radius: 12px; padding: 25px; display: none; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
         .lesson-card.active { display: block; }
         .lesson-card h2 { color: var(--gold); margin-bottom: 15px; }
         .lesson-card p { font-size: 1.05rem; line-height: 1.6; margin-bottom: 15px; color: #e2e8f0; }
 
-        /* Görsel Masa Alanı */
-        .poker-table { background: var(--table-felt); border: 10px solid #5c3d2e; border-radius: 100px; padding: 30px; margin: 25px 0; text-align: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); }
-        .table-title { color: #86efac; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+        /* Poker Masası */
+        .poker-table { background: var(--table-felt); border: 12px solid #5c3d2e; border-radius: 100px; padding: 25px; margin: 20px 0; text-align: center; box-shadow: inset 0 0 25px rgba(0,0,0,0.7); position: relative; }
+        .table-title { color: #86efac; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
 
-        .cards-row { display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
+        .cards-row { display: flex; justify-content: center; gap: 8px; margin: 12px 0; flex-wrap: wrap; min-height: 80px; align-items: center; }
         
         /* Kart Tasarımı */
-        .card { background: white; color: #1e293b; font-weight: bold; width: 50px; height: 75px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #cbd5e1; }
+        .card { background: white; color: #1e293b; font-weight: bold; width: 52px; height: 78px; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #cbd5e1; user-select: none; }
         .card.red { color: #dc2626; }
-        .card.empty { background: rgba(255,255,255,0.15); border: 2px dashed rgba(255,255,255,0.4); color: transparent; }
+        .card.back { background: #1e293b; border: 2px solid #38bdf8; color: #38bdf8; font-size: 1.5rem; }
+        .card.empty { background: rgba(255,255,255,0.12); border: 2px dashed rgba(255,255,255,0.3); color: transparent; }
 
-        /* Interaktif Pratik Kutus */
+        /* Pratik Kutusu */
         .practice-box { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent-green); padding: 15px; border-radius: 6px; margin-top: 20px; }
         .practice-box h4 { color: var(--accent-green); margin-bottom: 8px; }
         .choice-btns { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
@@ -58,224 +59,6 @@
 
         .nav-footer { display: flex; justify-content: space-between; margin-top: 25px; }
         .action-btn { background: var(--gold); border: none; color: black; font-weight: bold; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-    </style>
-</head>
-<body>
 
-    <div class="container">
-        <header>
-            <h1>🎓 Adım Adım Poker Öğren</h1>
-            <p>Sıfır bilgiyle başla, görerek ve uygulayarak öğren!</p>
-        </header>
-
-        <!-- Adım Butonları -->
-        <div class="step-nav">
-            <button class="step-btn active" onclick="loadStep(1)">1. Temel Mantık</button>
-            <button class="step-btn" onclick="loadStep(2)">2. Dağıtım & El</button>
-            <button class="step-btn" onclick="loadStep(3)">3. Masanın Açılması</button>
-            <button class="step-btn" onclick="loadStep(4)">4. En İyi 5'liyi Bul</button>
-        </div>
-
-        <!-- ADIM 1: Temel Mantık -->
-        <div id="step-1" class="lesson-card active">
-            <h2>Adım 1: Oyunun Temel Amacı Nedir?</h2>
-            <p>Texas Hold'em Poker'de amaç çok basittir: <strong>Elinizdeki 2 kapalı kart</strong> ile <strong>masaya açılacak 5 ortak kartı</strong> birleştirip en güçlü 5 kartlık kombinasyonu oluşturmak.</p>
-            <p>Aşağıdaki masaya bak: Ortadaki 5 kart masadaki Herkesin ortak kullandığı kartlardır. Sana verilen 2 kart ise sadece senindir!</p>
-
-            <div class="poker-table">
-                <div class="table-title">Masadaki Ortak Kartlar (5 Adet)</div>
-                <div class="cards-row">
-                    <div class="card red">K♦</div>
-                    <div class="card">J♠</div>
-                    <div class="card red">8♥</div>
-                    <div class="card">2♣</div>
-                    <div class="card red">A♥</div>
-                </div>
-
-                <div class="table-title" style="margin-top: 20px;">Senin Elindeki Özel Kartlar (2 Adet)</div>
-                <div class="cards-row">
-                    <div class="card red">A♦</div>
-                    <div class="card red">K♥</div>
-                </div>
-            </div>
-
-            <div class="practice-box">
-                <h4>🧠 Örnek Soru:</h4>
-                <p>Masada bir <strong>A</strong> kartı var, senin elinde de bir <strong>A</strong> kartı var. Sen şu an elinde bir çift (Per) As yapmış olur musun?</p>
-                <div class="choice-btns">
-                    <button class="choice-btn" onclick="checkChoice(1, true)">Evet, Per Yapmış Olurum</button>
-                    <button class="choice-btn" onclick="checkChoice(1, false)">Hayır, Masadaki Kart Sayılmaz</button>
-                </div>
-                <div id="res-1" class="result-msg"></div>
-            </div>
-
-            <div class="nav-footer">
-                <div></div>
-                <button class="action-btn" onclick="loadStep(2)">Sonraki Adıma Geç ➡️</button>
-            </div>
-        </div>
-
-        <!-- ADIM 2: Dağıtım & Hamleler -->
-        <div id="step-2" class="lesson-card">
-            <h2>Adım 2: Tur Başlangıcı ve Hamleler</h2>
-            <p>Oyun başlarken herkese 2 kart dağıtılır (Buna <strong>Pre-Flop</strong> denir). Kartlarına bakıp şu kararlardan birini verirsin:</p>
-            <ul style="margin-left: 20px; color: #cbd5e1; margin-bottom: 15px;">
-                <li><strong>Fold (Çekil):</strong> Kartların kötüyse elden çıkarsın, hiç risk almazsın.</li>
-                <li><strong>Call (Gör):</strong> Oyunda kalmak için ortaya konan bahsi kabul edersin.</li>
-                <li><strong>Raise (Artır):</strong> Kartların çok iyiyse bahsi yükseltip rakipleri zorlarsın.</li>
-            </ul>
-
-            <div class="poker-table">
-                <div class="table-title">Henüz Masaya Kart Açılmadı!</div>
-                <div class="cards-row">
-                    <div class="card empty"></div>
-                    <div class="card empty"></div>
-                    <div class="card empty"></div>
-                    <div class="card empty"></div>
-                    <div class="card empty"></div>
-                </div>
-
-                <div class="table-title" style="margin-top: 20px;">Sana Gelen Kartlar:</div>
-                <div class="cards-row">
-                    <div class="card">2♠</div>
-                    <div class="card red">7♦</div>
-                </div>
-            </div>
-
-            <div class="practice-box">
-                <h4>🧠 Senaryo:</h4>
-                <p>Eline 2 ve 7 geldi (Pokerdeki en zayıf başlangıç ellerinden biri). Ne yapmalısın?</p>
-                <div class="choice-btns">
-                    <button class="choice-btn" onclick="checkChoice(2, 'fold')">Fold (Çekilmek En Mantıklısı)</button>
-                    <button class="choice-btn" onclick="checkChoice(2, 'raise')">Raise (Tüm Parayı Yatır)</button>
-                </div>
-                <div id="res-2" class="result-msg"></div>
-            </div>
-
-            <div class="nav-footer">
-                <button class="action-btn" onclick="loadStep(1)">⬅️ Önceki Adım</button>
-                <button class="action-btn" onclick="loadStep(3)">Sonraki Adıma Geç ➡️</button>
-            </div>
-        </div>
-
-        <!-- ADIM 3: Masanın Açılması -->
-        <div id="step-3" class="lesson-card">
-            <h2>Adım 3: Masadaki Kartların Açılış Sırası</h2>
-            <p>Masaya 5 kart tek seferde açılmaz! Sırayla açılır:</p>
-            <ol style="margin-left: 20px; color: #cbd5e1; margin-bottom: 15px;">
-                <li><strong>Flop:</strong> Masaya ilk 3 kart aynı anda açılır.</li>
-                <li><strong>Turn:</strong> 4. kart açılır.</li>
-                <li><strong>River:</strong> 5. ve son kart açılır.</li>
-            </ol>
-
-            <div class="poker-table">
-                <div class="table-title">Aşama: FLOP (İlk 3 Kart Açıldı)</div>
-                <div class="cards-row">
-                    <div class="card red">Q♥</div>
-                    <div class="card red">J♥</div>
-                    <div class="card red">10♥</div>
-                    <div class="card empty"></div>
-                    <div class="card empty"></div>
-                </div>
-
-                <div class="table-title" style="margin-top: 20px;">Senin Elin:</div>
-                <div class="cards-row">
-                    <div class="card red">A♥</div>
-                    <div class="card red">K♥</div>
-                </div>
-            </div>
-
-            <div class="practice-box">
-                <h4>🧠 Bak ve İncele:</h4>
-                <p>Elinize bakın: A-K-Q-J-10 kartlarının hepsi Kırmızı Kalp (♥) oldu! Bu yapılabilecek en büyük el olan **Royal Flush**'tır.</p>
-                <div class="choice-btns">
-                    <button class="choice-btn" onclick="checkChoice(3, true)">Bu El İle Kesin Kazanırım!</button>
-                </div>
-                <div id="res-3" class="result-msg"></div>
-            </div>
-
-            <div class="nav-footer">
-                <button class="action-btn" onclick="loadStep(2)">⬅️ Önceki Adım</button>
-                <button class="action-btn" onclick="loadStep(4)">Sonraki Adıma Geç ➡️</button>
-            </div>
-        </div>
-
-        <!-- ADIM 4: En İyi 5'liyi Seçme -->
-        <div id="step-4" class="lesson-card">
-            <h2>Adım 4: Toplam 7 Karttan En İyi 5'liyi Seçme</h2>
-            <p>Unutma: Masada 5, elinde 2 olmak üzere toplam **7 kart** var. Sen bu 7 kart içinden sana **en güçlü 5'liyi** veren kombinasyonu otomatik olarak kullanırsın.</p>
-
-            <div class="poker-table">
-                <div class="table-title">Masadaki 5 Kart:</div>
-                <div class="cards-row">
-                    <div class="card">10♠</div>
-                    <div class="card">10♣</div>
-                    <div class="card red">5♦</div>
-                    <div class="card red">2♥</div>
-                    <div class="card">K♠</div>
-                </div>
-
-                <div class="table-title" style="margin-top: 20px;">Senin Elindeki 2 Kart:</div>
-                <div class="cards-row">
-                    <div class="card red">10♥</div>
-                    <div class="card red">A♦</div>
-                </div>
-            </div>
-
-            <div class="practice-box">
-                <h4>🧠 Soru:</h4>
-                <p>Masada iki adet 10 var, senin elinde de bir adet 10 var. Elindeki en iyi kombinasyon nedir?</p>
-                <div class="choice-btns">
-                    <button class="choice-btn" onclick="checkChoice(4, 'three')">Üçlü (Three of a Kind / Set) 10'lu</button>
-                    <button class="choice-btn" onclick="checkChoice(4, 'pair')">Sadece Tek Per</button>
-                </div>
-                <div id="res-4" class="result-msg"></div>
-            </div>
-
-            <div class="nav-footer">
-                <button class="action-btn" onclick="loadStep(3)">⬅️ Önceki Adım</button>
-                <div></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function loadStep(stepNum) {
-            document.querySelectorAll('.lesson-card').forEach(card => card.classList.remove('active'));
-            document.querySelectorAll('.step-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(`step-${stepNum}`).classList.add('active');
-            document.querySelectorAll('.step-btn')[stepNum - 1].classList.add('active');
-        }
-
-        function checkChoice(step, val) {
-            const res = document.getElementById(`res-${step}`);
-            if (step === 1) {
-                if (val === true) {
-                    res.className = "result-msg success";
-                    res.innerText = "Doğru! Masadaki kartlar herkese ortaktır. Masadaki As ile elindeki As birleşip bir Per oluşturur.";
-                }
-            } else if (step === 2) {
-                if (val === 'fold') {
-                    res.className = "result-msg success";
-                    res.innerText = "Harika karar! 2 ve 7 birbiriyle bağlantısız ve en zayıf eldir. Pas geçip paranı korumak en doğrusudur.";
-                } else {
-                    res.className = "result-msg error";
-                    res.innerText = "Kötü Hamle! Bu el çok zayıftır, paranı boş yere riske atmış olursun.";
-                }
-            } else if (step === 3) {
-                res.className = "result-msg success";
-                res.innerText = "Aynen öyle! Royal Flush pokerdeki yenilmez tek eldir. Bu el gelse arkana yaslanıp keyfine bakabilirsin!";
-            } else if (step === 4) {
-                if (val === 'three') {
-                    res.className = "result-msg success";
-                    res.innerText = "Tebrikler! Masadaki 2 adet 10 ile senin elindeki 1 adet 10 birleşip 3'lü (Set) oluşturur.";
-                } else {
-                    res.className = "result-msg error";
-                    res.innerText = "Yanlış. Masada 2, elinde 1 tane var. Toplam 3 tane 10 eder!";
-                }
-            }
-        }
-    </script>
-</body>
-</html>
+        /* MAÇ MODU ÖZEL STİLLERİ */
+        .bot-area { display: flex; justify-content: space-around; margin-bottom: 15px;
