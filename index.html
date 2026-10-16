@@ -470,6 +470,7 @@
             document.getElementById('table-cards').innerHTML = html;
         }
 
+       /* DÜZELTİLMİŞ DOĞRU POKER EL HESAPLAMA MOTORU */
         function evaluateHand(hand, table) {
             var allCards = hand.concat(table);
             var valOrder = {'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14};
@@ -488,6 +489,7 @@
 
             nums.sort(function(a,b){ return a-b; });
 
+            // Benzersiz sıralı sayılar (Kent kontrolü için)
             var uniqueNums = [];
             for (var u = 0; u < nums.length; u++) {
                 if (uniqueNums.indexOf(nums[u]) === -1) uniqueNums.push(nums[u]);
@@ -502,6 +504,11 @@
                         straightHigh = uniqueNums[s+4];
                     }
                 }
+                // A-2-3-4-5 (Aceleri küçük sayma durumu için özel kontrol)
+                if (!isStraight && uniqueNums.indexOf(14) !== -1 && uniqueNums.indexOf(2) !== -1 && uniqueNums.indexOf(3) !== -1 && uniqueNums.indexOf(4) !== -1 && uniqueNums.indexOf(5) !== -1) {
+                    isStraight = true;
+                    straightHigh = 5;
+                }
             }
 
             var isFlush = false;
@@ -511,49 +518,22 @@
 
             var counts = [];
             for (var vm in valuesMap) {
-                counts.push(valuesMap[vm]);
+                counts.push({value: vm, count: valuesMap[vm], rank: valOrder[vm]});
             }
-            counts.sort(function(a,b){ return b-a; });
+            // Sayı adetlerine göre büyükten küçüğe sırala
+            counts.sort(function(a,b){ return b.count - a.count || b.rank - a.rank; });
 
             var maxNum = Math.max.apply(null, nums);
 
-            if (isStraight && isFlush) return 800 + straightHigh;
-            if (counts[0] === 4) return 700 + maxNum;
-            if (counts[0] === 3 && counts[1] >= 2) return 600 + maxNum;
-            if (isFlush) return 550 + maxNum;
-            if (isStraight) return 500 + straightHigh;
-            if (counts[0] === 3) return 400 + maxNum;
-            if (counts[0] === 2 && counts[1] === 2) return 300 + maxNum;
-            if (counts[0] === 2) return 200 + maxNum;
-            return maxNum;
+            // Puanlama Katmanları (Kent her zaman perlerden ve yüksek karttan üstündür)
+            if (isStraight && isFlush) return 8000 + straightHigh;
+            if (counts[0].count === 4) return 7000 + counts[0].rank;
+            if (counts[0].count === 3 && counts[1].count >= 2) return 6000 + counts[0].rank;
+            if (isFlush) return 5500 + maxNum;
+            if (isStraight) return 5000 + straightHigh; // Kent skoru güvenli şekilde en üst sırada
+            if (counts[0].count === 3) return 4000 + counts[0].rank;
+            if (counts[0].count === 2 && counts[1].count === 2) return 3000 + counts[0].rank * 10 + counts[1].rank;
+            if (counts[0].count === 2) return 2000 + counts[0].rank;
+            
+            return 1000 + maxNum;
         }
-
-        function resolveShowdown() {
-            toggleControls(false);
-            log("⚔️ SHOWDOWN! Kartlar açılıyor...");
-
-            document.getElementById('bot1-cards').innerHTML = renderCard(gameState.bot1Hand[0]) + renderCard(gameState.bot1Hand[1]);
-            document.getElementById('bot2-cards').innerHTML = renderCard(gameState.bot2Hand[0]) + renderCard(gameState.bot2Hand[1]);
-
-            var userScore = evaluateHand(gameState.userHand, gameState.tableCards);
-            var bot1Score = evaluateHand(gameState.bot1Hand, gameState.tableCards);
-            var bot2Score = evaluateHand(gameState.bot2Hand, gameState.tableCards);
-
-            if (userScore >= bot1Score && userScore >= bot2Score) {
-                gameState.userChips += gameState.pot;
-                log("🎉 TEBRİKLER! En güçlü el sende! +" + gameState.pot + "$ kazandın!");
-            } else if (bot1Score >= bot2Score) {
-                gameState.bot1Chips += gameState.pot;
-                log("🤖 Bot 1 daha iyi bir elle kazandı.");
-            } else {
-                gameState.bot2Chips += gameState.pot;
-                log("🤖 Bot 2 daha iyi bir elle kazandı.");
-            }
-
-            gameState.pot = 0;
-            updateChips();
-            document.getElementById('btn-start').disabled = false;
-        }
-    </script>
-</body>
-</html>
